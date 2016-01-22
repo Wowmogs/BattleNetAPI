@@ -12,6 +12,7 @@ An object-oriented PHP library for communicating with the various Battle.net API
   - [Set Callback](#set-callback)
   - [Set Max Connections](#set-max-connections)
   - [No Timeout](#no-timeout)
+  - [Throttle Requests](#throttle-requests)
   - [Add A Request](#add-a-request)
   - [Send The Requests](#send-the-requests)
   - [Available Services & Endpoints](#available-services--endpoints)
@@ -96,6 +97,38 @@ Example usage:
 ```
 BattleNetAPI::noTimeout();
 ```
+
+### Throttle Requests
+*IT IS NOT RECOMMENDED TO USE THROTTLING IN A PRODUCTION ENVIRONMENT.*
+
+Each request that you make with your unique key it is counted towards the maximum number of requests you can make per second, and per hour.
+
+As of January 21, 2016 with a "Basic Plan" you are limited to the following:
+
+**100** Calls per second
+**36,000** Calls per hour
+
+If you use all 100 calls for every second consecutively, you will reach the 36,000 calls per hour limit in 6 minutes. Meaning, for the remaining 54 minutes you won't be able to make any requests without getting an error (i.e. `Account Over Queries Per Hour Limit`).
+
+To help with these limitations, we have implemented two functions that you can use to fine tune how many requests you make per second and per hour.
+
+**IMPORTANT:** Note that this does NOT limit the exact number of requests that are sent, as there is no method of determining when cURL actually sent the request. It can only be handled on the receiving end once a request has given us a response back. This number is only to better tune the number of requests that are processed per second and per hour and not necessarily how many requests are sent. Meaning, if you set this number to 100, you won't necessarily limit 100 requests being sent which is why it's a good idea to keep it a little under.
+
+Throttle the number of requests processed per second (*Default: 80*):
+
+Example usage:
+```
+BattleNetAPI::setThrottlePerSecond( 80 );
+```
+
+Throttle the number of requests processed per hour (*Default: 35000*):
+
+Example usage:
+```
+BattleNetAPI::setThrottlePerHour( 35000 );
+```
+
+The throttle per hour setting is only useful for internal applications, such as when making several thousand requests consecutively to build an item database. Without a database or some other form of logging for multiple users it's not possible to keep count of how many requests were made in the past hour.
 
 ### Add A Request
 Add a single Battle.net API request to the queue.
