@@ -94,7 +94,8 @@ BattleNetAPI::setCallback( 'myCallback' );
 
 /**
  * Set your maximum number of simultaneous connections. Keep in mind, the higher
- * the number, the more processing and memory usage.
+ * the number the more processing and memory usage and the quicker you can
+ * reach your request limits resulting in requests with over query limit errors.
  * Default: 5
  */
 BattleNetAPI::setMaxConnections( 5 );
@@ -107,6 +108,44 @@ BattleNetAPI::setMaxConnections( 5 );
  * limitations.
  */
 //BattleNetAPI::noTimeout();
+
+/**
+ * Throttle the number of requests that can be made in a single second. If the
+ * number specified below is reached, the server will sleep for one second and
+ * reset the counter.
+ * 
+ * !!!! IT IS NOT RECOMMENDED TO USE THROTTLING IN A PRODUCTION ENVIRONMENT !!!!
+ *
+ * Note that this does NOT limit the exact number of requests that are sent, as
+ * there is no method of determining when cURL actually sent the request. It can
+ * only be handled on the receiving end once a request has given us a response
+ * back. This number is only to better tune the number of requests that are
+ * processed per second and not necessarily how many requests are sent.
+ * Default: 80
+ */
+BattleNetAPI::setThrottlePerSecond( 80 );
+
+/**
+ * Throttle the number of requests that can be made in a single hour. If the
+ * number specified below is reached, the server will sleep for one hour and
+ * reset the counter.
+ *
+ * !!!! IT IS NOT RECOMMENDED TO USE THROTTLING IN A PRODUCTION ENVIRONMENT !!!!
+ *
+ * Note that this does NOT limit the exact number of requests that are sent, as
+ * there is no method of determining when cURL actually sent the request. It can
+ * only be handled on the receiving end, once a request has given us a response
+ * back. This number is only to better tune the number of requests that are
+ * processed per hour and not necessarily how many requests are sent.
+ *
+ * The throttle per hour setting is only useful for internal applications, such
+ * as when making several thousand requests consecutively to build an item
+ * database. Without a database or some other form of logging for multiple users
+ * it's not possible to keep count of how many requests were made in the past
+ * hour.
+ * Default: 35000
+ */
+//BattlenetAPI::setThrottlePerHour( 35000 );
 
 /**
  * Add all your Battle.net API requests.
