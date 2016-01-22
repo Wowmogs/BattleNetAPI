@@ -552,11 +552,21 @@ class BattleNetAPI {
 		$multiHandler = curl_multi_init();
 		$options      = self::$curlOptions;
 
+		$now         = time();
+		$secondSleep = FALSE;
+		$hourSleep   = FALSE;
+
+		$isThrottledPerSecond = self::isThrottledPerSecond();
+		$isThrottledPerHour   = self::isThrottledPerHour();
+
 		for ( $i = 0; $i < $maxConnections; $i++ ) {
 			$requestHandle = curl_init();
 			$requestUrl    = self::formatRequestUrl( self::$requests[ $i ]->getUrl() );
 
 			$options[ CURLOPT_URL ] = $requestUrl;
+
+			self::$totalRequestsThisSecond++;
+			self::$totalRequestsThisHour++;
 
 			curl_setopt_array( $requestHandle, $options );
 			curl_multi_add_handle( $multiHandler, $requestHandle );
@@ -579,6 +589,43 @@ class BattleNetAPI {
 				}
 
 				if ( $i < self::$totalRequests ) {
+					if ( $isThrottledPerSecond ) {
+						if ( $secondSleep ) {
+							$secondSleep = FALSE;
+							sleep( 1 );
+							$now = time();
+							self::$totalRequestsThisSecond = 0;
+						}
+
+						if ( time() > $now ) {
+							$now = time();
+							self::$totalRequestsThisSecond = 0;
+						}
+
+						if ( self::$totalRequestsThisSecond == self::$maxRequestsPerSecond ) {
+							$secondSleep = TRUE;
+							self::$totalRequestsThisSecond = 0;
+						}
+
+						self::$totalRequestsThisSecond++;
+					}
+
+					if ( $isThrottledPerHour ) {
+						if ( $hourSleep ) {
+							$hourSleep = FALSE;
+							sleep( 3600 );
+							$now = time();
+							self::$totalRequestsThisHour = 0;
+						}
+
+						if ( self::$totalRequestsThisHour == self::$maxRequestsPerHour ) {
+							$hourSleep = TRUE;
+							self::$totalRequestsThisHour = 0;
+						}
+
+						self::$totalRequestsThisHour++;
+					}
+
 					$requestHandle = curl_init();
 
 					$options[ CURLOPT_URL ] = self::formatRequestUrl( self::$requests[ $i++ ]->getUrl() );
