@@ -197,6 +197,46 @@ class BattleNetAPI {
 	}
 
 	/**
+	 * Sets the number of requests to throttle per second.
+	 * @param int $requestsPerSecond Number of requests to throttle per second
+	 */
+	public static function setThrottlePerSecond( $requestsPerSecond ) {
+		self::$maxRequestsPerSecond = $requestsPerSecond;
+	}
+
+	/**
+	 * Whether or not requests should be throttled per second.
+	 * @return boolean Returns TRUE if max requests per second is greater than 0
+	 */
+	private static function isThrottledPerSecond() {
+		if ( self::$maxRequestsPerSecond > 0 ) {
+			return TRUE;
+		}
+
+		return FALSE;
+	}
+
+	/**
+	 * Sets the number of requests to throttle per hour.
+	 * @param int $requestsPerHour Number of requests to throttle per hour
+	 */
+	public static function setThrottlePerHour( $requestsPerHour ) {
+		self::$maxRequestsPerHour = $requestsPerHour;
+	}
+
+	/**
+	 * Whether or not requests should be throttled per hour.
+	 * @return boolean Returns TRUE if max requests per hour is greater than 0
+	 */
+	private static function isThrottledPerHour() {
+		if ( self::$maxRequestsPerHour > 0 ) {
+			return TRUE;
+		}
+
+		return FALSE;
+	}
+
+	/**
 	 * Set the API key to authenticate with.
 	 *
 	 * An API key is required to interact with the Battle.net API services. If
