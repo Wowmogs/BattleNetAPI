@@ -165,6 +165,9 @@ Please visit <https://dev.battle.net/io-docs> for complete documentation of all 
 
 ## Changelog
 
+#### 1.1 - January 21, 2016
+- Added request throttling functionality
+
 #### 1.0 - January 17, 2016
 - Initial public release
 
