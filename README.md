@@ -66,7 +66,7 @@ You can set your callback for a global function using a string:
 Or you can set your callback for a class method using an array:
 `BattleNetAPI::setCallback( array( 'myClass', 'myCallback' ) );`
 
-Your callback function whether the request was successful or failed.
+Your callback function is called each time a request is processed, whether the request was successful or failed.
 
 Example callback:
 ```
