@@ -112,6 +112,30 @@ class BattleNetAPI {
 	private static $totalRequests;
 
 	/**
+	 * The maximum number of requests that can be made in a single second.
+	 * @var integer
+	 */
+	private static $maxRequestsPerSecond = 0;
+
+	/**
+	 * The maximum number of requests that can be made in a single hour.
+	 * @var integer
+	 */
+	private static $maxRequestsPerHour = 0;
+
+	/**
+	 * Total number of requests that were made this second.
+	 * @var integer
+	 */
+	private static $totalRequestsThisSecond = 0;
+
+	/**
+	 * Total number of requests that were made this hour.
+	 * @var integer
+	 */
+	private static $totalRequestsThisHour = 0;
+
+	/**
 	 * Contains a list of all the regions available to us.
 	 *
 	 * For a complete listing of available regions go to:
